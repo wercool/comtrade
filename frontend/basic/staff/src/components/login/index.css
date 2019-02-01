@@ -1,0 +1,15 @@
+.loginComponentContainer {
+  height: 70vh; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+}
+.loginCard {
+    width: 500px;
+}
+.loginCardActions {
+    float: right;
+}
+.loginCardFormControl {
+    width: 100%;
+}
