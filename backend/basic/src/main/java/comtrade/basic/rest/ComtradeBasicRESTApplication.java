@@ -23,7 +23,7 @@ public class ComtradeBasicRESTApplication {
         Properties properties = new Properties();
         try {
             properties.load(resource.getInputStream());
-            String applicationTitle = properties.getProperty("application.title");
+            String applicationTitle = properties.getProperty("spring.application.title");
 
             SpringApplication app = new SpringApplication(ComtradeBasicRESTApplication.class);
             app.setWebApplicationType(WebApplicationType.REACTIVE);
