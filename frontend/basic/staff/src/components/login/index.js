@@ -14,11 +14,17 @@ import Icon from '@material-ui/core/Icon';
 
 import * as EmailValidator from 'email-validator';
 
+import { withRouter } from 'react-router-dom';
+
 import './index.css';
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
+
+    if (this.props.app.services.authService.isAuthenticated()) {
+      this.props.history.push('/dashboard');
+    }
 
     this.submitted = false;
 
@@ -60,7 +66,13 @@ class Login extends React.Component {
       if (formFieldsValidationMessages[errorField] !== '') valid = false;
     }
     if (valid) {
-      console.log('VALID LOGIN FORM VALUES');
+console.log('ASSUMED AUTHENTICATED');
+this.props.app.services.authService.authenticated = true;
+this.props.history.push('/dashboard');
+// set first entry in history to mirror the last entry
+this.props.history[0] = this.props.history[this.props.history.length - 1];
+// remove all but first history entry
+this.props.history.length = 1;
     }
   }
   render() {
@@ -118,4 +130,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default withRouter(Login);
