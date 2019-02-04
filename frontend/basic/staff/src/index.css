@@ -5,3 +5,10 @@
 .error {
     color: red;
 }
+.dialog {
+    margin: 2mm;
+    position: relative;
+}
+.appBarLabel{ 
+    flex: 1
+}

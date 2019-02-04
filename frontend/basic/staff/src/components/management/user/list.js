@@ -9,6 +9,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import AddNewUserDialog from './dialog/add.new.user.dialog';
 
@@ -32,9 +33,11 @@ class UserList extends React.Component {
         <React.Fragment>
             <Divider/>
             <div className="userListTools">
-                <Fab color="primary" aria-label="Add User" size="medium" onClick={this.addNewUserDialogOpen}>
-                    <Icon>person_add</Icon>
-                </Fab>
+                <Tooltip title="Add New User">
+                    <Fab color="primary" aria-label="Add User" size="medium" onClick={this.addNewUserDialogOpen}>
+                        <Icon>person_add</Icon>
+                    </Fab>
+                </Tooltip>
             </div>
             <Divider/>
             <Paper className="tablePaper" square={true}>
