@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 import CardActions from '@material-ui/core/CardActions';
 import Icon from '@material-ui/core/Icon';
 
-import * as EmailValidator from 'email-validator';
+// import * as EmailValidator from 'email-validator';
 
 import { withRouter } from 'react-router-dom';
 
@@ -47,33 +47,40 @@ class Login extends React.Component {
   loginSubmit(event) {
     event.preventDefault();
     this.submitted = true;
-    let formFieldsValidationMessages = {
-        email: '',
-        password: ''
-    };
-    if (this.state.formFields.email === '') {
-      formFieldsValidationMessages.email = 'Email is required';
-    } else if (!EmailValidator.validate(this.state.formFields.email)) {
-      formFieldsValidationMessages.email = 'Enter valid email address, please';
-    }
-    if (this.state.formFields.password === '') {
-      formFieldsValidationMessages.password = 'Password is required';
-    }
-    this.setState({formFieldsValidationMessages: formFieldsValidationMessages});
 
-    let valid = true;
-    for (let errorField in formFieldsValidationMessages) {
-      if (formFieldsValidationMessages[errorField] !== '') valid = false;
-    }
-    if (valid) {
-console.log('ASSUMED AUTHENTICATED');
+
+console.log('ASSUMED AUTHENTICATED WITHOUT VALIDATION');
 this.props.app.services.authService.authenticated = true;
 this.props.history.push('/dashboard');
-// set first entry in history to mirror the last entry
-this.props.history[0] = this.props.history[this.props.history.length - 1];
-// remove all but first history entry
-this.props.history.length = 1;
-    }
+
+
+//     let formFieldsValidationMessages = {
+//         email: '',
+//         password: ''
+//     };
+//     if (this.state.formFields.email === '') {
+//       formFieldsValidationMessages.email = 'Email is required';
+//     } else if (!EmailValidator.validate(this.state.formFields.email)) {
+//       formFieldsValidationMessages.email = 'Enter valid email address, please';
+//     }
+//     if (this.state.formFields.password === '') {
+//       formFieldsValidationMessages.password = 'Password is required';
+//     }
+//     this.setState({formFieldsValidationMessages: formFieldsValidationMessages});
+
+//     let valid = true;
+//     for (let errorField in formFieldsValidationMessages) {
+//       if (formFieldsValidationMessages[errorField] !== '') valid = false;
+//     }
+//     if (valid) {
+// console.log('ASSUMED AUTHENTICATED');
+// this.props.app.services.authService.authenticated = true;
+// this.props.history.push('/dashboard');
+// // set first entry in history to mirror the last entry
+// this.props.history[0] = this.props.history[this.props.history.length - 1];
+// // remove all but first history entry
+// this.props.history.length = 1;
+//     }
   }
   render() {
     return (

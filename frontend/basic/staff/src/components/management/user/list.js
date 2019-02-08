@@ -18,49 +18,51 @@ import './list.css';
 class UserList extends React.Component {
     constructor(props) {
         super(props);
-        this.addNewUserDialogOpen = this.addNewUserDialogOpen.bind(this);
+
+        this.addNewUserDialog = React.createRef();
+        this.openAddNewUserDialogAction = this.openAddNewUserDialogAction.bind(this);
+
         this.state = {
-            newUserDialogOpenState: false
+            addNewUserDialogIsOpened: false
         };
     }
-    addNewUserDialogOpen() {
-        this.setState({
-            newUserDialogOpenState: true
-        });
+    openAddNewUserDialogAction() {
+        this.addNewUserDialog.open();
     }
     render() {
-    return (
-        <React.Fragment>
-            <Divider/>
-            <div className="userListTools">
-                <Tooltip title="Add New User">
-                    <Fab color="primary" aria-label="Add User" size="medium" onClick={this.addNewUserDialogOpen}>
-                        <Icon>person_add</Icon>
-                    </Fab>
-                </Tooltip>
-            </div>
-            <Divider/>
-            <Paper className="tablePaper" square={true}>
-            <Typography variant="subheading" component="span">
-                User List
-            </Typography>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Email</TableCell>
-                        <TableCell>Creation Date</TableCell>
-                        <TableCell align="right">Groups</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
+        return (
+            <React.Fragment>
+                <Divider/>
+                <div className="userListTools">
+                    <Tooltip title="Add New User">
+                        <Fab color="primary" aria-label="Add User" size="medium" onClick={this.openAddNewUserDialogAction}>
+                            <Icon>person_add</Icon>
+                        </Fab>
+                    </Tooltip>
+                </div>
+                <Divider/>
+                <Paper className="tablePaper" square={true}>
+                <Typography variant="subheading" component="span">
+                    User List
+                </Typography>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Creation Date</TableCell>
+                            <TableCell align="right">Groups</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
 
-                </TableBody>
-            </Table>
-            </Paper>
+                    </TableBody>
+                </Table>
+                </Paper>
 
-            <AddNewUserDialog app={this.props.app} open={this.state.newUserDialogOpenState}/>
-        </React.Fragment>
-    );
+                <AddNewUserDialog app={this.props.app} innerRef={node => this.addNewUserDialog = node} open={this.state.addNewUserDialogIsOpened}/>
+
+            </React.Fragment>
+        );
     }
 }
 
