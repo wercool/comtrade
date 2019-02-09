@@ -86,7 +86,7 @@ this.props.history.push('/dashboard');
     return (
       <div className="loginComponentContainer">
       <form name="loginForm" onSubmit={this.loginSubmit.bind(this)}>
-          <Card className="loginCard" raised={true}>
+          <Card className="loginCard noselect" raised={true}>
             <CardHeader
               avatar={
                 <Avatar aria-label="Login">
@@ -127,7 +127,7 @@ this.props.history.push('/dashboard');
             </CardContent>
             <CardActions className="loginCardActions">
               <Button color="primary" type="submit">
-                LOGIN
+                AUTHENTICATE
               </Button>
             </CardActions>
           </Card>

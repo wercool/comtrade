@@ -25,10 +25,10 @@ class Header extends React.Component {
         };
         this.menu = [
             {label: 'Dashboard', icon: 'dashboard', path: '/dashboard'},
-            {label: 'User Management', icon: 'supervisor_account', path: '/dashboard/management/user'},
             {label: 'Product Management', icon: 'pages', path: '/dashboard/management/product'},
             {label: 'Inventory Management', icon: 'store', path: '/dashboard/management/inventory'},
             {label: 'Auction Management', icon: 'gavel', path: '/dashboard/management/auction'},
+            {label: 'User Management', icon: 'supervisor_account', path: '/dashboard/management/user'},
             {label: 'Notification Management', icon: 'notification_important', path: '/dashboard/management/notification'},
         ];
         this.menuList = (
@@ -80,7 +80,7 @@ class Header extends React.Component {
                                         </Fab>
                                     ) : ('')
                                 }
-                                    <Link to="/dashboard" className="link appBarTitle">Comtrade Staff</Link>
+                                    <Link to="/dashboard" className="link appBarTitle noselect">Comtrade Staff</Link>
                                 </Typography>
                             </Grid>
                             <Grid item>

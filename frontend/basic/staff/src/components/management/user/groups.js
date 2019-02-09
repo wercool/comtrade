@@ -24,8 +24,8 @@ class UserGroups extends React.Component {
             </div>
           <Divider/>
           <Paper className="tablePaper" square={true}>
-            <Typography variant="subheading" component="span">
-                User Group List
+            <Typography variant="subheading" component="span" align="center">
+                USER GROUPS
             </Typography>
             <Table>
                 <TableHead>

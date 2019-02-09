@@ -7,14 +7,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Slide from '@material-ui/core/Slide';
 
 import { withStyles } from '@material-ui/core/styles'
 
 import './add.new.user.css';
 
 const styles = {
-    root: {
-        margin: '4mm',
+    appBar: {
+        position: 'relative',
     },
 };
 
@@ -28,7 +29,11 @@ class AddNewUserDialog extends React.Component {
 
         this.open = this.open.bind(this);
         this.close = this.close.bind(this);
-        this.onClose = this.onClose.bind(this);
+        this.onAltClose = this.onAltClose.bind(this);
+
+        this.transition = (props) => {
+            return <Slide direction="up" {...props} />;
+        }
     }
     open() {
         this.setState({ open: true });
@@ -36,15 +41,17 @@ class AddNewUserDialog extends React.Component {
     close() {
         this.setState({ open: false });
     }
-    onClose(event, reason) {
+    onAltClose(event, reason) {
         this.close();
     }
     render() {
         return (
             <Dialog
+                fullScreen
                 open={this.state.open}
-                onClose={this.onClose}>
-                <AppBar>
+                onClose={this.onAltClose}
+                TransitionComponent={this.transition}>
+                <AppBar className={this.props.classes.appBar}>
                     <Toolbar>
                         <IconButton color="inherit" onClick={this.close} aria-label="Close">
                             <Icon>close</Icon>
@@ -58,9 +65,9 @@ class AddNewUserDialog extends React.Component {
                     </Toolbar>
                 </AppBar>
                 <Paper square={true}>
-                <Typography variant="subheading">
-                    New User
-                </Typography>
+                    <Typography variant="subheading">
+                        New User
+                    </Typography>
                 </Paper>
             </Dialog>
         );

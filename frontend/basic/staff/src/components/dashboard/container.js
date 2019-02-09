@@ -18,10 +18,10 @@ class DashboardContainer extends React.Component {
             <React.Fragment>
                 <Switch>
                     <Route exact path="/dashboard" render={() => ( <Dashboard app={this.props.app} /> )}/>
-                    <Route exact path="/dashboard/management/user" render={() => ( <UserManagement app={this.props.app} /> )}/>
                     <Route exact path="/dashboard/management/product" render={() => ( <ProductManagement app={this.props.app} /> )}/>
                     <Route exact path="/dashboard/management/inventory" render={() => ( <InventoryManagement app={this.props.app} /> )}/>
                     <Route exact path="/dashboard/management/auction" render={() => ( <AuctionManagement app={this.props.app} /> )}/>
+                    <Route exact path="/dashboard/management/user" render={() => ( <UserManagement app={this.props.app} /> )}/>
                     <Route exact path="/dashboard/management/notification" render={() => ( <NotificationManagement app={this.props.app} /> )}/>
                 </Switch>
 

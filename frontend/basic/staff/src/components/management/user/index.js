@@ -29,8 +29,8 @@ class UserManagement extends React.Component {
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab label="User List" icon={<Icon>person</Icon>} />
-            <Tab label="User Groups" icon={<Icon>group</Icon>} />
+            <Tab label="USERS" icon={<Icon>person</Icon>} />
+            <Tab label="USER GROUPS" icon={<Icon>group</Icon>} />
           </Tabs>
 
           {this.state.activeTabIndex === 0 && <UserList app={ this.props.app }/>}
