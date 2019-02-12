@@ -16,6 +16,9 @@
 .appBarLabel{ 
     flex: 1
 }
+.floatRight {
+    float: right;
+}
 .formPadding {
     padding: 10mm;
 }

@@ -29,6 +29,7 @@ class UserList extends React.Component {
         };
     }
     openAddNewUserDialogAction() {
+        document.activeElement.blur();
         this.addNewUserDialog.open();
     }
     render() {
@@ -59,14 +60,13 @@ class UserList extends React.Component {
                 <Divider/>
                 <Paper className="tablePaper" square={true}>
                 <Typography variant="subheading" component="span" align="center">
-                    USER
+                    USERS
                 </Typography>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>Email</TableCell>
                             <TableCell>Person name</TableCell>
-                            <TableCell>Creation Date</TableCell>
                             <TableCell align="right">Groups</TableCell>
                         </TableRow>
                     </TableHead>
