@@ -16,3 +16,9 @@
 .appBarLabel{ 
     flex: 1
 }
+.formPadding {
+    padding: 10mm;
+}
+.fullWidth {
+    width: 100%;
+}

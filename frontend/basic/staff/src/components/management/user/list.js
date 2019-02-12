@@ -65,6 +65,7 @@ class UserList extends React.Component {
                     <TableHead>
                         <TableRow>
                             <TableCell>Email</TableCell>
+                            <TableCell>Person name</TableCell>
                             <TableCell>Creation Date</TableCell>
                             <TableCell align="right">Groups</TableCell>
                         </TableRow>
