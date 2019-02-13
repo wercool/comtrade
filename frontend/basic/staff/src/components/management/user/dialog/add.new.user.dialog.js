@@ -12,6 +12,13 @@ import Paper from '@material-ui/core/Paper';
 import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Chip from '@material-ui/core/Chip';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import { withStyles } from '@material-ui/core/styles';
 
 import * as EmailValidator from 'email-validator';
@@ -24,15 +31,20 @@ const styles = {
     appBar: {
         position: 'relative',
     },
+    chip: {
+        margin: '2mm'
+    }
 };
 
 class AddNewUserDialog extends React.Component {
     constructor(props) {
         super(props);
 
+        this.user = new User();
+
         this.state = {
             open: this.props.open,
-            user: new User(),
+            user: this.user,
             passwordConfirm: '',
             passwordNotConfirmed: false,
             changed: false,
@@ -124,11 +136,11 @@ class AddNewUserDialog extends React.Component {
         let inputName = event.target.name;
         let inputValue = event.target.value;
 
-        let user = this.state.user;
+        this.user[inputName] = inputValue;
 
-        user[inputName] = inputValue;
+        if (inputName === 'email') this.user.username = this.user.email;
 
-        this.setState({user: user, changed: true});
+        this.setState({user: this.user, changed: true});
     }
     render() {
         return (
@@ -158,7 +170,7 @@ class AddNewUserDialog extends React.Component {
                                     error={this.state.errors.email.length > 0}
                                     value={this.state.user.email}
                                     onChange={this.handleChange}
-                                    label="Email"
+                                    label="Email (Username)"
                                     margin="normal"
                                     variant="outlined"
                                     type="email"
@@ -207,7 +219,7 @@ class AddNewUserDialog extends React.Component {
                             }
                             <TextField
                                     name="password"
-                                    error={this.state.errors.passwordConfirmation !== undefined}
+                                    error={this.state.errors.password.length > 0}
                                     onChange={(event) => { this.setState({ passwordConfirm: event.target.value}); }}
                                     label="Password confirmation"
                                     margin="normal"
@@ -220,6 +232,31 @@ class AddNewUserDialog extends React.Component {
                                 this.state.passwordNotConfirmed && 
                                 <FormHelperText error>Password does not match</FormHelperText>
                             }
+                            <FormControl fullWidth={true}>
+                                <InputLabel htmlFor="roles-input">Roles</InputLabel>
+                                <Select
+                                    name="roles"
+                                    multiple
+                                    value={this.state.user.roles}
+                                    onChange={this.handleChange}
+                                    input={<Input id="roles-input"/>}
+                                    renderValue={selected => (
+                                        <div>
+                                            {selected.map(value => (
+                                                <Chip key={value} label={value} className={this.props.classes.chip}/>
+                                            ))}
+                                        </div>
+                                    )}
+                                >
+                                {
+                                    this.props.app.services.authService.roles.map(role => (
+                                        <MenuItem key={role} value={role}>
+                                            {role}
+                                        </MenuItem>
+                                    ))
+                                }
+                                </Select>
+                            </FormControl>
                             <br/><br/>
                             <Button color="primary" type="submit" className="floatRight">
                                 SAVE

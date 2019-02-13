@@ -1,8 +1,10 @@
 class User {
     constructor() {
+        this.username = '';
+        this.password = '';
         this.email = '';
         this.name = '';
-        this.password = '';
+        this.roles = ['ROLE_USER'];
     }
 }
 

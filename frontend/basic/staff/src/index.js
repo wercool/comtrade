@@ -8,15 +8,19 @@ import './index.css';
 /**
  * Services import
  */
+import APIService from './services/api';
+import PublicService from './services/public';
 import AuthService from './services/auth';
 
-console.log(process.env.REACT_APP_VERSION);
+console.log('Version: ' + process.env.REACT_APP_VERSION);
 
 /**
  * Services initialization
  */
+const apiService = new APIService();
 const services = {
-    authService: new AuthService()
+    publicService: new PublicService(apiService),
+    authService: new AuthService(apiService)
 };
 
 ReactDOM.render(<ComtradeStaffApp 

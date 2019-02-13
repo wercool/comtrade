@@ -11,8 +11,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
 import CardActions from '@material-ui/core/CardActions';
 import Icon from '@material-ui/core/Icon';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
-// import * as EmailValidator from 'email-validator';
+import * as EmailValidator from 'email-validator';
 
 import { withRouter } from 'react-router-dom';
 
@@ -26,8 +27,6 @@ class Login extends React.Component {
       this.props.history.push('/dashboard');
     }
 
-    this.submitted = false;
-
     this.state = {
       formFields: {
         email: '',
@@ -36,7 +35,8 @@ class Login extends React.Component {
       formFieldsValidationMessages: {
         email: '',
         password: ''
-      }
+      },
+      submitted: false
     };
   }
   handleChange(field, event){
@@ -46,41 +46,47 @@ class Login extends React.Component {
   }
   loginSubmit(event) {
     event.preventDefault();
-    this.submitted = true;
 
+    let formFieldsValidationMessages = {
+        email: '',
+        password: ''
+    };
+    if (this.state.formFields.email === '') {
+      formFieldsValidationMessages.email = 'Email is required';
+    } else if (!EmailValidator.validate(this.state.formFields.email)) {
+      formFieldsValidationMessages.email = 'Enter valid email address, please';
+    }
+    if (this.state.formFields.password === '') {
+      formFieldsValidationMessages.password = 'Password is required';
+    }
+    this.setState({formFieldsValidationMessages: formFieldsValidationMessages});
 
-console.log('ASSUMED AUTHENTICATED WITHOUT VALIDATION');
-this.props.app.services.authService.authenticated = true;
-this.props.history.push('/dashboard');
+    let valid = true;
+    for (let errorField in formFieldsValidationMessages) {
+      if (formFieldsValidationMessages[errorField] !== '') valid = false;
+    }
+    if (valid) {
+      this.setState({ submitted: true });
+      this.props.app.services.authService.authenticate(this.state.formFields.email, btoa(this.state.formFields.password))
+      .then(authResponse => {
+        this.setState({submitted: false});
+        this.props.app.services.authService.setAuthenticated(authResponse.token);
 
+        this.props.history.push('/dashboard');
+        // set first entry in history to mirror the last entry
+        this.props.history[0] = this.props.history[this.props.history.length - 1];
+        // remove all but first history entry
+        this.props.history.length = 1;
+      })
+      .catch(error => {
+        //Not Found
+        if (error.status === 404) formFieldsValidationMessages.email = 'No account registered with provided email';
+        //Unauthorized
+        if (error.status === 401) formFieldsValidationMessages.password = 'Password does not match';
 
-//     let formFieldsValidationMessages = {
-//         email: '',
-//         password: ''
-//     };
-//     if (this.state.formFields.email === '') {
-//       formFieldsValidationMessages.email = 'Email is required';
-//     } else if (!EmailValidator.validate(this.state.formFields.email)) {
-//       formFieldsValidationMessages.email = 'Enter valid email address, please';
-//     }
-//     if (this.state.formFields.password === '') {
-//       formFieldsValidationMessages.password = 'Password is required';
-//     }
-//     this.setState({formFieldsValidationMessages: formFieldsValidationMessages});
-
-//     let valid = true;
-//     for (let errorField in formFieldsValidationMessages) {
-//       if (formFieldsValidationMessages[errorField] !== '') valid = false;
-//     }
-//     if (valid) {
-// console.log('ASSUMED AUTHENTICATED');
-// this.props.app.services.authService.authenticated = true;
-// this.props.history.push('/dashboard');
-// // set first entry in history to mirror the last entry
-// this.props.history[0] = this.props.history[this.props.history.length - 1];
-// // remove all but first history entry
-// this.props.history.length = 1;
-//     }
+        this.setState({submitted: false, formFieldsValidationMessages: formFieldsValidationMessages});
+      });
+    }
   }
   render() {
     return (
@@ -97,38 +103,43 @@ this.props.history.push('/dashboard');
               subheader="Authentication"
             />
             <CardContent>
+              {this.state.submitted && 
+                <React.Fragment>
+                  <LinearProgress />
+                  <br/>
+                </React.Fragment>
+              }
               <FormControl className="loginCardFormControl">
                 <InputLabel htmlFor="email">Email</InputLabel>
                 <Input id="email"
                       autoFocus={true}
+                      disableUnderline={this.state.submitted}
+                      disabled={this.state.submitted}
                       placeholder="Email address"
                       onChange={this.handleChange.bind(this, "email")} value={this.state.formFields["email"]}
                       aria-describedby="email-helper-text" type="email"/>
-                      {
-                        this.state.formFieldsValidationMessages.email === '' && !this.submitted
-                        ?
-                        <FormHelperText id="email-helper-text">We'll never share your email</FormHelperText>
-                        :
-                        <FormHelperText id="email-helper-text"><span className="error">{this.state.formFieldsValidationMessages.email}</span></FormHelperText>
+                      {this.state.formFieldsValidationMessages.email !== '' && !this.submitted &&
+                          <FormHelperText id="email-helper-text"><span className="error">{this.state.formFieldsValidationMessages.email}</span></FormHelperText>
                       }
               </FormControl>
               <FormControl className="loginCardFormControl">
                 <InputLabel htmlFor="password">Password</InputLabel>
-                <Input id="password" 
+                <Input id="password"
+                      disableUnderline={this.state.submitted}
+                      disabled={this.state.submitted}
                       onChange={this.handleChange.bind(this, "password")} value={this.state.formFields["password"]}
                       aria-describedby="password-helper-text" type="password"/>
-                      {
-                        this.state.formFieldsValidationMessages.password !== '' && this.submitted
-                        ?
+                      {this.state.formFieldsValidationMessages.password !== '' && !this.submitted &&
                         <FormHelperText id="email-helper-text"><span className="error">{this.state.formFieldsValidationMessages.password}</span></FormHelperText>
-                        : ''
                       }
               </FormControl>
             </CardContent>
             <CardActions className="loginCardActions">
-              <Button color="primary" type="submit">
-                AUTHENTICATE
-              </Button>
+              {!this.state.submitted &&
+                <Button color="primary" type="submit">
+                  AUTHENTICATE
+                </Button>
+              }
             </CardActions>
           </Card>
         </form>
