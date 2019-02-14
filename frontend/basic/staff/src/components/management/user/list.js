@@ -12,8 +12,11 @@ import TableRow from '@material-ui/core/TableRow';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import AddNewUserDialog from './dialog/add.new.user.dialog';
+
+import User from '../../../models/user';
 
 import './list.css';
 
@@ -25,8 +28,30 @@ class UserList extends React.Component {
         this.openAddNewUserDialogAction = this.openAddNewUserDialogAction.bind(this);
 
         this.state = {
-            addNewUserDialogIsOpened: false
+            listLoading: false,
+            listPermitted: true,
+            addNewUserDialogIsOpened: false,
+            userList: []
         };
+
+        this.getList = this.getList.bind(this);
+    }
+    componentDidMount() {
+        this.getList();
+    }
+    getList() {
+        this.setState({ listLoading: true });
+        this.props.app.services.userService.getList()
+        .then(userList => {
+            userList = userList.map(user => {
+                return new User().map(user);
+            });
+            this.setState({ userList: userList, listLoading: false });
+            console.log(this.state.userList);
+        })
+        .catch(error => {
+            if (error.status === 403) this.setState({ listLoading: false, listPermitted: false });
+        });
     }
     openAddNewUserDialogAction() {
         document.activeElement.blur();
@@ -59,24 +84,38 @@ class UserList extends React.Component {
                 </div>
                 <Divider/>
                 <Paper className="tablePaper" square={true}>
-                <Typography variant="subheading" component="span" align="center">
-                    USERS
-                </Typography>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Person Name</TableCell>
-                            <TableCell align="right">Groups</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-
-                    </TableBody>
-                </Table>
+                    <Typography variant="subheading" component="span" align="center">
+                        USERS
+                        {this.state.listLoading && <LinearProgress />}
+                    </Typography>
+                    {this.state.listPermitted &&
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Email</TableCell>
+                                    <TableCell>Person Name</TableCell>
+                                    <TableCell align="right">Groups</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {this.state.userList.map(user => (
+                                <TableRow key={user.id}>
+                                    <TableCell>{user.username}</TableCell>
+                                    <TableCell>{user.personName}</TableCell>
+                                    <TableCell></TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                    }
+                    {!this.state.listPermitted &&
+                        <Typography variant="headline" component="span" align="center">
+                            <Icon className="error">lock</Icon>
+                        </Typography>
+                    }
                 </Paper>
 
-                <AddNewUserDialog app={this.props.app} innerRef={node => this.addNewUserDialog = node} open={this.state.addNewUserDialogIsOpened}/>
+                <AddNewUserDialog app={this.props.app} innerRef={node => this.addNewUserDialog = node} onComplete={this.getList} open={this.state.addNewUserDialogIsOpened}/>
 
             </React.Fragment>
         );

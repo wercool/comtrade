@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,18 +23,16 @@ public class User implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private String id;
+    private ObjectId id;
 
     private String username;
     private String password;
     private Boolean enabled;
     private List<Role> roles;
+    private String personName;
 
-    public User(String username, String password, Boolean enabled, List<Role> roles) {
-        this.username = username;
-        this.password = password;
-        this.enabled = enabled;
-        this.roles = roles;
+    public String getId() {
+        return id.toHexString();
     }
 
     @Override
@@ -95,5 +94,13 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream().map(authority -> new SimpleGrantedAuthority(authority.name())).collect(Collectors.toList());
+    }
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
     }
 }

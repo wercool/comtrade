@@ -29,32 +29,38 @@ class Login extends React.Component {
 
     this.state = {
       formFields: {
-        email: '',
+        username: '',
         password: ''
       },
       formFieldsValidationMessages: {
-        email: '',
+        username: '',
         password: ''
       },
       submitted: false
     };
+
+    this.handleChange = this.handleChange.bind(this);
   }
-  handleChange(field, event){
+  handleChange(event){
     let formFields = this.state.formFields;
-    formFields[field] = event.target.value;
-    this.setState({formFields});
+    let inputName = event.target.name;
+    let inputValue = event.target.value;
+
+    formFields[inputName] = inputValue;
+
+    this.setState({formFields: formFields});
   }
   loginSubmit(event) {
     event.preventDefault();
 
     let formFieldsValidationMessages = {
-        email: '',
+        username: '',
         password: ''
     };
-    if (this.state.formFields.email === '') {
-      formFieldsValidationMessages.email = 'Email is required';
-    } else if (!EmailValidator.validate(this.state.formFields.email)) {
-      formFieldsValidationMessages.email = 'Enter valid email address, please';
+    if (this.state.formFields.username === '') {
+      formFieldsValidationMessages.username = 'Email is required';
+    } else if (!EmailValidator.validate(this.state.formFields.username)) {
+      formFieldsValidationMessages.username = 'Enter valid email address, please';
     }
     if (this.state.formFields.password === '') {
       formFieldsValidationMessages.password = 'Password is required';
@@ -67,7 +73,7 @@ class Login extends React.Component {
     }
     if (valid) {
       this.setState({ submitted: true });
-      this.props.app.services.authService.authenticate(this.state.formFields.email, btoa(this.state.formFields.password))
+      this.props.app.services.authService.authenticate(this.state.formFields.username, btoa(this.state.formFields.password))
       .then(authResponse => {
         this.setState({submitted: false});
         this.props.app.services.authService.setAuthenticated(authResponse.token);
@@ -80,7 +86,7 @@ class Login extends React.Component {
       })
       .catch(error => {
         //Not Found
-        if (error.status === 404) formFieldsValidationMessages.email = 'No account registered with provided email';
+        if (error.status === 404) formFieldsValidationMessages.username = 'No account registered with provided email';
         //Unauthorized
         if (error.status === 401) formFieldsValidationMessages.password = 'Password does not match';
 
@@ -110,27 +116,29 @@ class Login extends React.Component {
                 </React.Fragment>
               }
               <FormControl className="loginCardFormControl">
-                <InputLabel htmlFor="email">Email</InputLabel>
-                <Input id="email"
+                <InputLabel htmlFor="username">Email</InputLabel>
+                <Input name="username"
+                      value={this.state.formFields.username}
                       autoFocus={true}
                       disableUnderline={this.state.submitted}
                       disabled={this.state.submitted}
                       placeholder="Email address"
-                      onChange={this.handleChange.bind(this, "email")} value={this.state.formFields["email"]}
+                      onChange={this.handleChange}
                       aria-describedby="email-helper-text" type="email"/>
-                      {this.state.formFieldsValidationMessages.email !== '' && !this.submitted &&
-                          <FormHelperText id="email-helper-text"><span className="error">{this.state.formFieldsValidationMessages.email}</span></FormHelperText>
+                      {this.state.formFieldsValidationMessages.username !== '' && !this.submitted &&
+                          <FormHelperText id="email-helper-text"><span className="error">{this.state.formFieldsValidationMessages.username}</span></FormHelperText>
                       }
               </FormControl>
               <FormControl className="loginCardFormControl">
                 <InputLabel htmlFor="password">Password</InputLabel>
-                <Input id="password"
+                <Input name="password"
+                      value={this.state.formFields.password}
                       disableUnderline={this.state.submitted}
                       disabled={this.state.submitted}
-                      onChange={this.handleChange.bind(this, "password")} value={this.state.formFields["password"]}
+                      onChange={this.handleChange}
                       aria-describedby="password-helper-text" type="password"/>
                       {this.state.formFieldsValidationMessages.password !== '' && !this.submitted &&
-                        <FormHelperText id="email-helper-text"><span className="error">{this.state.formFieldsValidationMessages.password}</span></FormHelperText>
+                        <FormHelperText id="password-helper-text"><span className="error">{this.state.formFieldsValidationMessages.password}</span></FormHelperText>
                       }
               </FormControl>
             </CardContent>

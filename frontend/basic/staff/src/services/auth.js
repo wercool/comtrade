@@ -10,6 +10,7 @@ class AuthService {
             'ROLE_MANAGER',
             'ROLE_ADMIN'
         ];
+        this.userDetails = undefined;
         this.authenticate();
     }
     authenticate(username, password) {
@@ -24,9 +25,7 @@ class AuthService {
     }
     getUserDetails() {
         this.apiService.getData(endPointBase + '/details')
-        .then(userDetails => {
-            console.log(userDetails);
-        });
+        .then(userDetails => this.userDetails);
     }
     setAuthenticated(token) {
         if (token) {

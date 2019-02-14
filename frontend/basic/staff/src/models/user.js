@@ -1,10 +1,18 @@
 class User {
     constructor() {
+        this.id = null;
         this.username = '';
         this.password = '';
-        this.email = '';
-        this.name = '';
+        this.personName = '';
         this.roles = ['ROLE_USER'];
+    }
+    map(userObj) {
+        for (let field in userObj) {
+            if (this[field] !== undefined) {
+                this[field] = userObj[field];
+            }
+        }
+        return this;
     }
 }
 

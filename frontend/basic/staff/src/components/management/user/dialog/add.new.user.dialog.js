@@ -18,6 +18,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Chip from '@material-ui/core/Chip';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -50,10 +51,11 @@ class AddNewUserDialog extends React.Component {
             changed: false,
             confirmation: false,
             errors: {
-                email: [],
-                name: [],
+                username: [],
+                personName: [],
                 password: []
-            }
+            },
+            apiError: null
         };
 
         this.open = this.open.bind(this);
@@ -80,8 +82,8 @@ class AddNewUserDialog extends React.Component {
         this.setState({
             confirmation: false,
             errors: {
-                email: [],
-                name: [],
+                username: [],
+                personName: [],
                 password: []
             },
             open: false 
@@ -89,23 +91,23 @@ class AddNewUserDialog extends React.Component {
     }
     save(event) {
         if (event) event.preventDefault();
-        console.log(this.state.user);
+        // console.log(this.state.user);
 
         let errors = {
-            email: [],
-            name: [],
+            username: [],
+            personName: [],
             password: []
         };
 
-        if (this.state.user.email.length === 0) {
-            errors.email.push('Email is required');
+        if (this.state.user.username.length === 0) {
+            errors.username.push('Email is required');
         } else {
-            if (!EmailValidator.validate(this.state.user.email)) {
-                errors.email.push('Email format is incorrect');
+            if (!EmailValidator.validate(this.state.user.username)) {
+                errors.username.push('Email format is incorrect');
             }
         }
-        if (this.state.user.name.length === 0) {
-            errors.name.push('Person Name is required');
+        if (this.state.user.personName.length === 0) {
+            errors.personName.push('Person Name is required');
         }
         if (this.state.user.password.length === 0) {
             errors.password.push('Password is required');
@@ -126,10 +128,20 @@ class AddNewUserDialog extends React.Component {
             }
         }
 
+        this.setState({ errors: errors });
+
         if (validForm) {
-            this.forcedlyClose();
+            this.props.app.services.userService.add(this.user)
+            .then(user => {
+                this.forcedlyClose();
+                this.props.onComplete();
+            })
+            .catch(error => {
+                console.log(error);
+                this.setState({ apiError: error.statusText });
+            });
         } else {
-            this.setState({ confirmation: false, errors: errors });
+            this.setState({ confirmation: false });
         }
     }
     handleChange(event) {
@@ -137,8 +149,6 @@ class AddNewUserDialog extends React.Component {
         let inputValue = event.target.value;
 
         this.user[inputName] = inputValue;
-
-        if (inputName === 'email') this.user.username = this.user.email;
 
         this.setState({user: this.user, changed: true});
     }
@@ -166,9 +176,9 @@ class AddNewUserDialog extends React.Component {
                     <Paper square={true}>
                         <Typography variant="subheading" className="formPadding">
                             <TextField
-                                    name="email"
-                                    error={this.state.errors.email.length > 0}
-                                    value={this.state.user.email}
+                                    name="username"
+                                    error={this.state.errors.username.length > 0}
+                                    value={this.state.user.username}
                                     onChange={this.handleChange}
                                     label="Email (Username)"
                                     margin="normal"
@@ -179,14 +189,14 @@ class AddNewUserDialog extends React.Component {
                                     fullWidth={true}
                             />
                             {
-                                this.state.errors.email.map((error, i) => {
+                                this.state.errors.username.map((error, i) => {
                                     return (<FormHelperText key={i} error>{error}</FormHelperText>)
                                 })
                             }
                             <TextField
-                                    name="name"
-                                    error={this.state.errors.name.length > 0}
-                                    value={this.state.user.name}
+                                    name="personName"
+                                    error={this.state.errors.personName.length > 0}
+                                    value={this.state.user.personName}
                                     onChange={this.handleChange}
                                     label="Person Name"
                                     margin="normal"
@@ -196,7 +206,7 @@ class AddNewUserDialog extends React.Component {
                                     fullWidth={true}
                             />
                             {
-                                this.state.errors.name.map((error, i) => {
+                                this.state.errors.personName.map((error, i) => {
                                     return (<FormHelperText key={i} error>{error}</FormHelperText>)
                                 })
                             }
@@ -218,7 +228,7 @@ class AddNewUserDialog extends React.Component {
                                 })
                             }
                             <TextField
-                                    name="password"
+                                    name="passwordConfirm"
                                     error={this.state.errors.password.length > 0}
                                     onChange={(event) => { this.setState({ passwordConfirm: event.target.value}); }}
                                     label="Password confirmation"
@@ -285,6 +295,17 @@ class AddNewUserDialog extends React.Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
+
+                <Snackbar
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        open={this.state.apiError != null}
+                        autoHideDuration={2000}
+                        message={this.state.apiError}
+                        onClose={() => { this.setState({ apiError: null }); }}>
+                </Snackbar>
 
             </Dialog>
         );

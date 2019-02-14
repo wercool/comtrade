@@ -11,6 +11,7 @@ import './index.css';
 import APIService from './services/api';
 import PublicService from './services/public';
 import AuthService from './services/auth';
+import UserService from './services/user';
 
 console.log('Version: ' + process.env.REACT_APP_VERSION);
 
@@ -20,7 +21,8 @@ console.log('Version: ' + process.env.REACT_APP_VERSION);
 const apiService = new APIService();
 const services = {
     publicService: new PublicService(apiService),
-    authService: new AuthService(apiService)
+    authService: new AuthService(apiService),
+    userService: new UserService(apiService)
 };
 
 ReactDOM.render(<ComtradeStaffApp 
