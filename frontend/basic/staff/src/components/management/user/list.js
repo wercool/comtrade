@@ -47,7 +47,7 @@ class UserList extends React.Component {
                 return new User().map(user);
             });
             this.setState({ userList: userList, listLoading: false });
-            console.log(this.state.userList);
+            console.table(this.state.userList);
         })
         .catch(error => {
             if (error.status === 403) this.setState({ listLoading: false, listPermitted: false });
