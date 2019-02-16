@@ -60,6 +60,9 @@ class UserList extends React.Component {
     render() {
         return (
             <React.Fragment>
+
+                <AddNewUserDialog app={this.props.app} innerRef={node => this.addNewUserDialog = node} onComplete={this.getList} open={this.state.addNewUserDialogIsOpened}/>
+
                 <Divider/>
                 <div className="userListTools">
                     <Grid container spacing={8} alignItems="center" justify="space-between">
@@ -76,7 +79,7 @@ class UserList extends React.Component {
                                     <Icon>search</Icon>
                                 </Grid>
                                 <Grid item>
-                                    <TextField label="Search by email@, person name" style={{minWidth: 250}}/>
+                                    <TextField label="Search by email@, person name" style={{minWidth: 250, marginRight: '2mm'}}/>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -114,9 +117,6 @@ class UserList extends React.Component {
                         </Typography>
                     }
                 </Paper>
-
-                <AddNewUserDialog app={this.props.app} innerRef={node => this.addNewUserDialog = node} onComplete={this.getList} open={this.state.addNewUserDialogIsOpened}/>
-
             </React.Fragment>
         );
     }
