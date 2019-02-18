@@ -25,3 +25,11 @@
 .fullWidth {
     width: 100%;
 }
+.fontSize3mm {
+    font-size: 12px;
+}
+.formBlock {
+    border: solid 1px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    padding: 10px;
+}

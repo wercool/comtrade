@@ -44,8 +44,8 @@ class AddNewUserDialog extends React.Component {
         this.user = new User();
 
         this.state = {
-            open: this.props.open,
             user: this.user,
+            open: this.props.open,
             passwordConfirm: '',
             passwordNotConfirmed: false,
             changed: false,
@@ -69,7 +69,8 @@ class AddNewUserDialog extends React.Component {
         }
     }
     open() {
-        this.setState({ open: true, user: new User(), changed: false });
+        this.user = new User();
+        this.setState({ open: true, user: this.user, changed: false });
     }
     close() {
         if (this.state.changed) {
