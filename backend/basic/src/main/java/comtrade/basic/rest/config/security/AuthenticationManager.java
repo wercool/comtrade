@@ -42,7 +42,7 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
     }
 
     private <T> Mono<T> raiseBadCredentials() {
-        return Mono.error(new BadCredentialsException("Invalid Credentials"));
+        return Mono.error(new BadCredentialsException("Invalid credentials"));
     }
 
     private Mono<UserDetails> authenticateToken(final JWTPreAuthenticationToken jwtPreAuthenticationToken) {

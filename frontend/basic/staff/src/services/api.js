@@ -10,7 +10,16 @@ class APIService {
     }
     handleErrors(response) {
         if (!response.ok) {
-            return Promise.reject(response);
+            /**
+             * Unauthorize
+             * except /auth/token
+             */
+            if (response.status === 401 && response.url.indexOf('/auth/token') === -1) {
+                localStorage.clear('token');
+                window.location = '/login';
+            } else {
+                return Promise.reject(response);
+            }
         }
         return response;
     }

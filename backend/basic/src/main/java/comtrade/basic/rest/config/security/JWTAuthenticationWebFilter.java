@@ -1,11 +1,9 @@
 package comtrade.basic.rest.config.security;
 
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.authentication.ServerAuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
-import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher.MatchResult;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.server.ServerWebExchange;
@@ -15,7 +13,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class JWTAuthenticationWebFilter extends AuthenticationWebFilter {
 
-    public JWTAuthenticationWebFilter(final ReactiveAuthenticationManager authenticationManager,
+    public JWTAuthenticationWebFilter(final AuthenticationManager authenticationManager,
                                       final JWTAuthenticationConverter converter,
                                       final UnauthorizedAuthenticationEntryPoint entryPoint) {
 
@@ -25,7 +23,7 @@ public class JWTAuthenticationWebFilter extends AuthenticationWebFilter {
         Assert.notNull(converter, "converter cannot be null");
         Assert.notNull(entryPoint, "entryPoint cannot be null");
 
-        setAuthenticationConverter(converter);
+        setServerAuthenticationConverter(converter::apply);
         setAuthenticationFailureHandler(new ServerAuthenticationEntryPointFailureHandler(entryPoint));
         setRequiresAuthenticationMatcher(new JWTHeadersExchangeMatcher());
     }
@@ -37,13 +35,13 @@ public class JWTAuthenticationWebFilter extends AuthenticationWebFilter {
 
             /* Check for header "Authorization" or parameter "token" */
             return request.map(ServerHttpRequest::getHeaders)
-                   .filter(h -> h.containsKey("Authorization"))
-                   .flatMap($ -> MatchResult.match())
-                   .switchIfEmpty(request.map(ServerHttpRequest::getQueryParams)
-                           .filter(h -> h.containsKey("token"))
-                           .flatMap($ -> MatchResult.match())
-                           .switchIfEmpty(MatchResult.notMatch())
-                   );
+                    .filter(h -> h.containsKey("Authorization"))
+                    .flatMap($ -> MatchResult.match())
+                    .switchIfEmpty(request.map(ServerHttpRequest::getQueryParams)
+                            .filter(h -> h.containsKey("token"))
+                            .flatMap($ -> MatchResult.match())
+                            .switchIfEmpty(MatchResult.notMatch())
+                    );
         }
     }
 }

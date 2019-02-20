@@ -134,7 +134,7 @@ public class JWTTokenUtil implements Serializable {
 
     public Boolean validateToken(String token) {
         final String username = getUsernameFromToken(token);
-        final Date created = getIssuedAtDateFromToken(token);
+        //final Date created = getIssuedAtDateFromToken(token);
         //final Date expiration = getExpirationDateFromToken(token);
         return (
                 username.equals(username)

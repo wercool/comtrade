@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -55,13 +56,15 @@ public class JWTAuthenticationConverter implements Function<ServerWebExchange, M
             if (authToken != null) {
                 try {
                     username = jwtTokenUtil.getUsernameFromToken(authToken);
-                } catch (IllegalArgumentException e) {
-                    logger.error("an error occured during getting username from token", e);
-                } catch (Exception e) {
-                    logger.warn("the token is expired and not valid anymore", e);
+                } catch (IllegalArgumentException ex) {
+                    logger.error("An error occured during getting username from token", ex);
+                    return Mono.error(new BadCredentialsException("An error occured during getting username from token"));
+                } catch (ExpiredJwtException ex) {
+                    logger.warn("Provided token is exprired and not valid anymore; " + ex.getMessage());
+                    return Mono.error(ex);
                 }
             } else {
-                logger.warn("couldn't find bearer string, will ignore the header");
+                logger.warn("Couldn't find bearer string, will ignore the header");
             }
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

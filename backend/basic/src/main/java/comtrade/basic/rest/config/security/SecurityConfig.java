@@ -32,13 +32,14 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
             .exceptionHandling()
-            .authenticationEntryPoint(entryPoint)
+                .authenticationEntryPoint(entryPoint)
             .and()
             .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .authorizeExchange()
-            .pathMatchers(HttpMethod.OPTIONS).permitAll()
-            .pathMatchers(AUTH_WHITELIST).permitAll()
-            .anyExchange().authenticated()
+                .pathMatchers(HttpMethod.OPTIONS).permitAll()
+                .pathMatchers(AUTH_WHITELIST).permitAll()
+            .anyExchange()
+            .authenticated()
             .and()
             .httpBasic().disable()
             .formLogin().disable()
